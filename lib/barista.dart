@@ -1,5 +1,5 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
+import 'dart:developer';
+
+class Barista {
+  static void brew() => log('Brewing a perfect cup of coffee!');
 }

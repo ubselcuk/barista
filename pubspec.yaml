@@ -1,7 +1,9 @@
 name: barista
-description: "A new Flutter package project."
+description: "Simplify your app architecture with essential extensions and utility classes."
 version: 0.0.1
 homepage: https://github.com/ubselcuk/barista
+repository: https://github.com/ubselcuk/barista
+issue_tracker: https://github.com/ubselcuk/barista/issues
 
 environment:
   sdk: ^3.10.1
