@@ -1,6 +1,6 @@
 name: barista
 description: "Simplify your app architecture with essential extensions and utility classes."
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/ubselcuk/barista
 repository: https://github.com/ubselcuk/barista
 issue_tracker: https://github.com/ubselcuk/barista/issues
@@ -10,6 +10,10 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  audioplayers: ^6.5.1
+  path_provider: ^2.1.5
+  crypto: ^3.0.7
+  http: ^1.6.0
   flutter:
     sdk: flutter
 

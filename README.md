@@ -3,3 +3,4 @@ Simplify your app architecture with essential extensions and utility classes
 ## Features
 
 - Backoff
+- Sound
