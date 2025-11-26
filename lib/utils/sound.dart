@@ -9,20 +9,9 @@ import 'package:http/http.dart' as http;
 class Sound {
   late final AudioPlayer _player;
 
-  Sound.loop() {
+  Sound({bool loop = false}) {
     _player = AudioPlayer();
-    _player.setReleaseMode(ReleaseMode.loop);
-  }
-
-  Sound.single() {
-    _player = AudioPlayer();
-    _player.setReleaseMode(ReleaseMode.release);
-  }
-
-  Sound.shout(String? url) {
-    _player = AudioPlayer();
-    _player.setReleaseMode(ReleaseMode.release);
-    cache(url).then((S) => playSource(S));
+    _player.setReleaseMode(loop ? ReleaseMode.loop : ReleaseMode.release);
   }
 
   Future<void> dispose() async {
@@ -30,13 +19,14 @@ class Sound {
     log('Sound disposed');
   }
 
-  Future<void> playSource(DeviceFileSource? source) async {
+  Future<void> play(String? url) async {
+    DeviceFileSource? source = await Sound.cache(url);
     if (source == null) {
       log('No sound source available to play');
       return;
     }
     await _player.play(source);
-    log('Sound playing');
+    log('Sound playing from URL');
   }
 
   Future<void> stop() async {
@@ -54,7 +44,7 @@ class Sound {
     log('Sound resumed');
   }
 
-  Future<DeviceFileSource?> cache(String? url) async {
+  static Future<DeviceFileSource?> cache(String? url) async {
     try {
       if (url == null || url.isEmpty) {
         log('Sound URL is null or empty');
@@ -84,5 +74,28 @@ class Sound {
       log('Error in cacheAndPlay: $e');
     }
     return null;
+  }
+
+  static Future<void> single(String? url) async {
+    if (url == null || url.isEmpty) {
+      log('No sound URL provided!');
+      return;
+    }
+
+    final P = AudioPlayer();
+    P.setReleaseMode(ReleaseMode.release);
+    DeviceFileSource? source = await Sound.cache(url);
+
+    if (source == null) {
+      log('No sound source available to play');
+      return;
+    }
+    await P.play(source);
+    log('Sound playing');
+
+    P.onPlayerComplete.listen((event) async {
+      await P.dispose();
+      log('Sound disposed after completion');
+    });
   }
 }
