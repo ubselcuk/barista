@@ -1,3 +1,5 @@
+## 0.0.5
+- Refactor Sound class to improve initialization.
 ## 0.0.4
 - Refactor sound. 
 

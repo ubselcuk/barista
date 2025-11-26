@@ -7,11 +7,19 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
 class Sound {
-  late final AudioPlayer _player;
+  final AudioPlayer _player;
+  final DeviceFileSource? _source;
 
-  Sound({bool loop = false}) {
-    _player = AudioPlayer();
-    _player.setReleaseMode(loop ? ReleaseMode.loop : ReleaseMode.release);
+  Sound._(this._player, this._source);
+
+  static Future<Sound> loop(String? url) async {
+    final player = AudioPlayer();
+    player.setReleaseMode(ReleaseMode.loop);
+    final source = await Sound.cache(url);
+
+    if (source == null) throw Exception('Failed to load sound source for loop.');
+    
+    return Sound._(player, source);
   }
 
   Future<void> dispose() async {
@@ -19,13 +27,12 @@ class Sound {
     log('Sound disposed');
   }
 
-  Future<void> play(String? url) async {
-    DeviceFileSource? source = await Sound.cache(url);
-    if (source == null) {
+  Future<void> play() async {
+    if (_source == null) {
       log('No sound source available to play');
       return;
     }
-    await _player.play(source);
+    await _player.play(_source);
     log('Sound playing from URL');
   }
 
@@ -40,6 +47,10 @@ class Sound {
   }
 
   Future<void> resume() async {
+    if (_source == null) {
+      log('No sound source available to play');
+      return;
+    }
     await _player.resume();
     log('Sound resumed');
   }
@@ -57,14 +68,12 @@ class Sound {
 
       final f = File(file);
       if (await f.exists()) {
-        log('Sound playing from cache');
         return DeviceFileSource(f.path);
       } else {
         log('Downloading sound from URL: $url');
         final response = await http.get(Uri.parse(url));
         if (response.statusCode == 200) {
           final f = await File(file).writeAsBytes(response.bodyBytes);
-          log('Sound downloaded and playing');
           return DeviceFileSource(f.path);
         } else {
           log('Failed to download sound: ${response.statusCode}');
