@@ -1,6 +1,6 @@
 name: barista
 description: "Simplify your app architecture with essential extensions and utility classes."
-version: 0.0.1
+version: 0.0.7
 homepage: https://github.com/ubselcuk/barista
 repository: https://github.com/ubselcuk/barista
 issue_tracker: https://github.com/ubselcuk/barista/issues
